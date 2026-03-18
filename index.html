@@ -1,237 +1,206 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Our Year – Daisy & Me</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daisy Notebook</title>
 
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-    background: #ffeef7;
-    font-family: "Segoe UI", sans-serif;
-    color: #4a2b3b;
-  }
+    body {
+        margin: 0;
+        padding: 0;
+        background: #fff6fb;
+        font-family: 'Georgia', serif;
+        color: #4a3f45;
+        display: flex;
+        height: 100vh;
+    }
 
-  .header {
-    text-align: center;
-    padding: 20px 10px 10px;
-  }
+    .container {
+        display: flex;
+        width: 100%;
+        height: 100%;
+    }
 
-  .header h1 {
-    font-family: "Georgia", serif;
-    font-size: 1.9rem;
-    color: #d14f86;
-    margin-bottom: 4px;
-  }
+    .tabs {
+        width: 140px;
+        background: #ffe3f4;
+        padding: 15px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        overflow-y: auto;
+        border-right: 3px solid #ffcae8;
+    }
 
-  .header p {
-    font-size: 0.9rem;
-    color: #7a4f63;
-  }
+    .tabs button {
+        padding: 10px 12px;
+        background: #ffffff;
+        border: 2px solid #ffb6df;
+        border-radius: 18px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: 0.25s;
+        text-align: left;
+        box-shadow: 0 3px 6px rgba(255, 170, 210, 0.3);
+        white-space: nowrap;
+    }
 
-  .playlist-box {
-    background: #ffffffdd;
-    padding: 12px;
-    border-radius: 16px;
-    margin: 10px;
-    border: 1px solid #ffd3e8;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  }
+    .tabs button.active {
+        background: #ffb6df;
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 4px 8px rgba(255, 140, 200, 0.4);
+    }
 
-  .playlist-box h2 {
-    font-size: 0.9rem;
-    color: #c03f7a;
-    margin-bottom: 6px;
-  }
+    .page {
+        flex: 1;
+        padding: 25px;
+        overflow-y: auto;
+        background: #fff;
+        margin: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(255, 180, 220, 0.35);
+        border-left: 10px solid #ffd3ec;
+        line-height: 1.8;
+        font-size: 17px;
+        animation: fade 0.3s ease-in-out;
+    }
 
-  .tab-bar {
-    display: flex;
-    overflow-x: auto;
-    white-space: nowrap;
-    gap: 8px;
-    padding: 10px;
-    background: #ffe3f1;
-    border-bottom: 1px solid #ffcde6;
-  }
+    @keyframes fade {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
-  .tab {
-    padding: 8px 14px;
-    border-radius: 999px;
-    background: #ffd9ec;
-    color: #7a4f63;
-    font-size: 0.85rem;
-    border: 1px solid #ffc3e0;
-    flex-shrink: 0;
-    cursor: pointer;
-    transition: 0.2s;
-  }
+    iframe {
+        width: 100%;
+        border-radius: 14px;
+    }
 
-  .tab.active {
-    background: #ffb8d9;
-    color: #4a2b3b;
-    font-weight: bold;
-  }
+    @media (max-width: 700px) {
+        body {
+            flex-direction: column;
+            height: auto;
+        }
 
-  .slider {
-    display: flex;
-    width: 100%;
-    transition: transform 0.35s ease;
-  }
+        .container {
+            flex-direction: column;
+        }
 
-  .page {
-    min-width: 100%;
-    padding: 18px 16px 40px;
-    box-sizing: border-box;
-  }
+        .tabs {
+            flex-direction: row;
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            border-right: none;
+            border-bottom: 3px solid #ffcae8;
+        }
 
-  .page h3 {
-    font-family: "Georgia", serif;
-    font-size: 1.4rem;
-    color: #d14f86;
-    margin-bottom: 6px;
-  }
+        .tabs button {
+            flex-shrink: 0;
+        }
 
-  .page small {
-    font-size: 0.8rem;
-    color: #a06b82;
-    display: block;
-    margin-bottom: 12px;
-  }
-
-  .page p {
-    white-space: pre-line;
-    line-height: 1.55;
-    font-size: 0.95rem;
-  }
+        .page {
+            margin: 10px;
+            height: auto;
+        }
+    }
 </style>
 
 <script>
-  function openTab(index) {
-    document.querySelector(".slider").style.transform =
-      `translateX(-${index * 100}%)`;
+function openTab(tabName) {
+    const pages = document.querySelectorAll(".page");
+    const buttons = document.querySelectorAll(".tabs button");
 
-    document.querySelectorAll(".tab").forEach((t, i) => {
-      t.classList.toggle("active", i === index);
-    });
-  }
+    pages.forEach(p => p.style.display = "none");
+    buttons.forEach(b => b.classList.remove("active"));
+
+    document.getElementById(tabName).style.display = "block";
+    document.querySelector(`[data-tab='${tabName}']`).classList.add("active");
+}
 </script>
-
 </head>
+
 <body>
 
-<div class="header">
-  <h1>Our Year Together</h1>
-  <p>A soft diary you can flip through.</p>
+<div class="container">
+
+<div class="tabs">
+    <button data-tab="Playlist" class="active" onclick="openTab('Playlist')">Playlist</button>
+    <button data-tab="March1" onclick="openTab('March1')">March</button>
+    <button data-tab="April" onclick="openTab('April')">April</button>
+    <button data-tab="May" onclick="openTab('May')">May</button>
+    <button data-tab="June" onclick="openTab('June')">June</button>
+    <button data-tab="July" onclick="openTab('July')">July</button>
+    <button data-tab="August" onclick="openTab('August')">August</button>
+    <button data-tab="September" onclick="openTab('September')">September</button>
+    <button data-tab="October" onclick="openTab('October')">October</button>
+    <button data-tab="November" onclick="openTab('November')">November</button>
+    <button data-tab="December" onclick="openTab('December')">December</button>
+    <button data-tab="January" onclick="openTab('January')">January</button>
+    <button data-tab="February" onclick="openTab('February')">February</button>
+    <button data-tab="March2" onclick="openTab('March2')">March (1 Year)</button>
 </div>
 
-<div class="playlist-box">
-  <h2>♪ Our Year Playlist</h2>
-  <iframe style="border-radius:12px"
-    src="https://open.spotify.com/embed/playlist/3s2TSNu1VSJXqpXvy2RPlp?utm_source=generator"
-    width="100%" height="352" frameBorder="0"
-    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-    loading="lazy"></iframe>
+<div id="Playlist" class="page" style="display:block;">
+<iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/3s2TSNu1VSJXqpXvy2RPlp?utm_source=generator" height="352" frameBorder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 </div>
 
-<div class="tab-bar">
-  <div class="tab active" onclick="openTab(0)">March</div>
-  <div class="tab" onclick="openTab(1)">April</div>
-  <div class="tab" onclick="openTab(2)">May</div>
-  <div class="tab" onclick="openTab(3)">June</div>
-  <div class="tab" onclick="openTab(4)">July</div>
-  <div class="tab" onclick="openTab(5)">August</div>
-  <div class="tab" onclick="openTab(6)">September</div>
-  <div class="tab" onclick="openTab(7)">October</div>
-  <div class="tab" onclick="openTab(8)">November</div>
-  <div class="tab" onclick="openTab(9)">December</div>
-  <div class="tab" onclick="openTab(10)">January</div>
-  <div class="tab" onclick="openTab(11)">February</div>
-  <div class="tab" onclick="openTab(12)">1 Year</div>
+<div id="March1" class="page" style="display:none;">
+march i will always love this month because is the month my life changed as i met u my princess i will always remember the first time i saw you u were so beautiful i thought i had no chance ever to be with you but i had to try u seemed like the one that was destined to be my wife and know ik i am right when we kissed for the first time it felt like something out of a movie i had so many butterflies i was so happy day i felt like at the top of the world then we had our second date in the record store seeing u knowing so much about music and so many artist and all made me realize how much cooler u were than me and i just kept falling in love more and more i had a lot of fun that day even if ur dad was following us around tho when your mom said u couldn't see me more i cried on the ride back home thinking all my fears were true and it was too good to be true luckily that wasn't true and i got to see u again on the mall we took the picture for our first post together we explored the mall for the first time out the many that would happen till now we kissed a lot in the photo booth hehe we then i got to see u in the park i remember u didn't get permission at first so i waited but it seemed like i would have to leave but then suddenly u told me u could come and u walked all the way to the park just to see me thats when i knew and i had no doubts that u loved me so much since the beginning
 </div>
 
-<div class="slider">
+<div id="April" class="page" style="display:none;">
+April at the start of this month i remember i was in Miami as i was getting my stuff to move to tampa as i was sure that i wanted to live so i never had to spends weeks without seeing you and i am glad i took that decision then we had our second movie date which was the Minecraft movie which was so special as we hadn't seen each other in two weeks i remember that day so clearly how beautifull u looked how much fun we had it was perfect cuddling in the cinema for the first time was like reaching nirvana and the gifts u gave me that day i remember they made me cry it was so beautiful i felt so loved i had such great time then next date we went to the pool in our parentrs house and it was also really nice just because we got to spend time together even if i was so nervous cause of them April was a good month we started knowing each other more and loving each other everyday more i was also so much less worried because my dream of us having a future together was starting to feel more and more real
+</div>
 
-  <div class="page">
-    <h3>March</h3>
-    <small>The month everything changed</small>
-    <p>march, i will always love this month, because is the month my life changed, as i met u, my princess. i will always remember the first time i saw you. u were so beautiful, i thought i had no chance ever to be with you, but i had to try. u seemed like the one that was destined to be my wife, and now ik i am right. when we kissed for the first time, it felt like something out of a movie. i had so many butterflies. i was so happy that day. i felt like at the top of the world. then we had our second date in the record store, seeing u knowing so much about music and so many artists and all, made me realize how much cooler u were than me, and i just kept falling in love more and more. i had a lot of fun that day, even if ur dad was following us around tho. when your mom said u couldn't see me more, i cried on the ride back home, thinking all my fears were true, and it was too good to be true. luckily that wasn't true, and i got to see u again on the mall. we took the picture for our first post together. we explored the mall for the first time, out of the many that would happen till now. we kissed a lot in the photo booth hehe. then i got to see u in the park. i remember u didn't get permission at first, so i waited, but it seemed like i would have to leave, but then suddenly u told me u could come, and u walked all the way to the park just to see me. that's when i knew, and i had no doubts that u loved me so much since the beginning.</p>
-  </div>
+<div id="May" class="page" style="display:none;">
+may this month is also extremely special this was the month we had our first time i felt so connected to you and i remember how much u smiled that day i was extremely happy for u to be my first but we also had one of my favorite dates of all time which was the beach it was so fun it was like we were hugging all day i felt so close to you like i could hold you forever and it made me so happy i always hated the beach all my life but that day made me change my mind now i love the beach as it makes me think of you and how happy that day made me and also all the times we have gone to the beach together i also remember having biscuit that month it was so nice taking care of him it felt like i had a part of you with me all the time i hugged it so tight every night we also had our first date at the st pete mall i will always love the picture of you in toys r us it was so fun that day
+</div>
 
-  <div class="page">
-    <h3>April</h3>
-    <small>Closer to you</small>
-    <p>april, at the start of this month, i remember i was in miami, as i was getting my stuff to move to tampa, as i was sure that i wanted to live so i never had to spend weeks without seeing you, and i am glad i took that decision. then we had our second movie date, which was the minecraft movie, which was so special, as we hadn't seen each other in two weeks. i remember that day so clearly, how beautiful u looked, how much fun we had. it was perfect. cuddling in the cinema for the first time was like reaching nirvana, and the gifts u gave me that day, i remember they made me cry. it was so beautiful. i felt so loved. i had such great time. then next date, we went to the pool in our parents house, and it was also really nice, just because we got to spend time together, even if i was so nervous cause of them. april was a good month. we started knowing each other more, and loving each other everyday more. i was also so much less worried, because my dream of us having a future together was starting to feel more and more real.</p>
-  </div>
+<div id="June" class="page" style="display:none;">
+June was the start of summer our most special time summer we got to see each other so much it made me happy this is also when u started to show me more when u had a big interest in the moment during summer it was army hehe u got many cool stuff out first date this month was bonnet springs i remember how beautifull u looked that day and how nice it was to walk outside with u but it was extremely hot we got so sweety we had to go mall and we got the first time we went urban air it was a lot of fun i really glad we did hehe we also walked the mall in socks to get pizz hehe this month we also had the most special mall date ever as we got enganged the beginning i knew i wanted to make sure u were mine forever and getting enganged was the first step hehe next we have to get married hehe i love you i got home so happy that day as u were finnaly my fiancé then we also had our first pool date at ur grandmas house it was so fun then we i got to meet ur grandparents better we also cuddled a lot this month i miss cuddling with u so muchb
+</div>
 
-  <div class="page">
-    <h3>May</h3>
-    <small>Beach & first times</small>
-    <p>may, this month is also extremely special. this was the month we had our first time. i felt so connected to you, and i remember how much u smiled that day. i was extremely happy for u to be my first. but we also had one of my favorite dates of all time, which was the beach. it was so fun. it was like we were hugging all day. i felt so close to you, like i could hold you forever, and it made me so happy. i always hated the beach all my life, but that day made me change my mind. now i love the beach, as it makes me think of you, and how happy that day made me, and also all the times we have gone to the beach together. i also remember having biscuit that month. it was so nice taking care of him. it felt like i had a part of you with me all the time. i hugged it so tight every night. we also had our first date at the st pete mall. i will always love the picture of you in toys r us. it was so fun that day.</p>
-  </div>
+<div id="July" class="page" style="display:none;">
+July started extremely special with July 4th or indepence day we went to the pier with ur grandparents and ate good then we got to walk alone i always remember the beautifull sky as we got onto the beach clothed to collect some sea shells hehehe then we sat and there and watch all the beautifull fireworks but i was more focused in watching my princess such perfect day again then two days later we went to beach again and it was so fun and u gave my beloved pyparus and other nice gifts ty i love you muchoooo u went back to Lakeland for a week and we went to that mall we hadn't in such a long time it was nice and we watched a nice movie and cuddled more hehe then u went back to st pete and we had the date i took u to goodwill and mall i always remember this date because u tried that wedding dress and wow i cant wait to get married u looked so beautiful princess we got a matching neckalse we also matched nails hehe i was a little sad because summer was almost over
+</div>
 
-  <div class="page">
-    <h3>June</h3>
-    <small>Summer & our engagement</small>
-    <p>june was the start of summer, our most special time. summer we got to see each other so much, it made me happy. this is also when u started to show me more, when u had a big interest in the moment. during summer it was army hehe. u got many cool stuff. our first date this month was bonnet springs. i remember how beautiful u looked that day, and how nice it was to walk outside with u, but it was extremely hot. we got so sweaty, we had to go mall, and we got the first time we went urban air. it was a lot of fun. i really glad we did hehe. we also walked the mall in socks to get pizza hehe. this month we also had the most special mall date ever, as we got engaged. the beginning i knew i wanted to make sure u were mine forever, and getting engaged was the first step hehe. next we have to get married hehe. i love you. i got home so happy that day, as u were finally my fiancé. then we also had our first pool date at ur grandmas house. it was so fun. then i got to meet ur grandparents better. we also cuddled a lot this month. i miss cuddling with u so much.</p>
-  </div>
+<div id="August" class="page" style="display:none;">
+august and to end this beautifull summer it was ur birthday i really hoped u liked ur gifts i put all my love into them i love u so much i had such great time and u got so many nice gifts and food was really good hehe i cant wait for ur next birthday it was hard not seeing you as often as i was used to u were bust more but still i knew how much i loved you and u loved me and even if we dont see each other as much that would never change still ofc we had a couple dates this month like on gf day which wwas so fun we went to get ice cream we went to mall and we had a lot of fun and we also planned going skating which we did and it was so much fun even if i fell a lot hehe we also went to mall a couple times which was a lot fun and i felt so much better everytime i saw you i love you so much daisy cant wait for ur next birthday
+</div>
 
-  <div class="page">
-    <h3>July</h3>
-    <small>Fireworks & shells</small>
-    <p>july started extremely special with july 4th, or independence day. we went to the pier with ur grandparents and ate good. then we got to walk alone. i always remember the beautiful sky as we got onto the beach clothed, to collect some sea shells hehehe. then we sat there and watched all the beautiful fireworks, but i was more focused on watching my princess. such perfect day again. then two days later, we went to beach again, and it was so fun, and u gave my beloved pyparus and other nice gifts. ty, i love you muchoooo. u went back to lakeland for a week, and we went to that mall we hadn't in such a long time. it was nice, and we watched a nice movie and cuddled more hehe. then u went back to st pete, and we had the date i took u to goodwill and mall. i always remember this date because u tried that wedding dress, and wow, i cant wait to get married. u looked so beautiful princess. we got a matching necklace. we also matched nails hehe. i was a little sad because summer was almost over.</p>
-  </div>
+<div id="September" class="page" style="display:none;">
+September my birthday month first we had a mall date because u couldt see me on my exact birthday so we went to mall which was a lot of fun because the opened spirit Halloween and u were so happy and me to and we started getting excited about Halloween hhehe and ofc next date was one of our most special ones i loved going to the aquarium so much i loved the photos of that day and it made me sso happy i loved it so many cool sharks too and the beautifull gifts u gave me ty so much again ur the best ever i love uuu hehe then we had a really nice house date u were in pjs and u painted my face for the first time and laughed so much like a extreme amount i remember i also gave u unicorn i hope u have still we also had the museum date which was super nice walking around with u even if ur dad was there it was better than record store cause it wasn't awkard and we had great time i loved this month ty for making my month special i love you
+</div>
 
-  <div class="page">
-    <h3>August</h3>
-    <small>Your birthday month</small>
-    <p>august, and to end this beautiful summer, it was ur birthday. i really hoped u liked ur gifts. i put all my love into them. i love u so much. i had such great time, and u got so many nice gifts, and food was really good hehe. i cant wait for ur next birthday. it was hard not seeing you as often as i was used to. u were busy more, but still i knew how much i loved you, and u loved me, and even if we dont see each other as much, that would never change. still, ofc, we had a couple dates this month, like on gf day, which was so fun. we went to get ice cream, we went to mall, and we had a lot of fun. and we also planned going skating, which we did, and it was so much fun, even if i fell a lot hehe. we also went to mall a couple times, which was a lot fun, and i felt so much better everytime i saw you. i love you so much daisy. cant wait for ur next birthday.</p>
-  </div>
+<div id="October" class="page" style="display:none;">
+October this month started with a super nice day where u had no school and we went to grandma pool and we had so much fun we got some snacks and then chilled on the couch unfortunately u spend a lot of this month in Georgia even though i was sad and missed u like hell it was okay because i knew we would get back to seeing each other more just some weeks and we came back with a bang heeeh u took me to my first concert and omg trst is so peakkkk and it was such a vibe being there with you i remember it so special i will never forget it i loved it even if second guy wasn't my vibe it was still super cool then even though u no love this day i see it in a different light Halloween i had never drssed up expect when i was a baby i always hated Halloween as i felt out of place like everybody was having so much fun but not me and i couldn't have fun but this year it was different because of you u made me dress up with u and we were the perfect zombie husband and wife we both looked great and even though it wasn't super logn and ur dad kinda ruined it for u i had such special time still and i felt so happy being with u having so much fun and i will never forget that day
+</div>
 
-  <div class="page">
-    <h3>September</h3>
-    <small>Your birthday & sharks</small>
-    <p>september, my birthday month. first we had a mall date because u couldn't see me on my exact birthday, so we went to mall, which was a lot of fun, because they opened spirit halloween, and u were so happy, and me too, and we started getting excited about halloween hehe. and ofc next date was one of our most special ones. i loved going to the aquarium so much. i loved the photos of that day, and it made me so happy. i loved it. so many cool sharks too, and the beautiful gifts u gave me. ty so much again. ur the best ever. i love uuu hehe. then we had a really nice house date. u were in pjs, and u painted my face for the first time, and laughed so much, like an extreme amount. i remember i also gave u unicorn. i hope u have still. we also had the museum date, which was super nice walking around with u, even if ur dad was there. it was better than record store, cause it wasn't awkward, and we had great time. i loved this month. ty for making my month special. i love you.</p>
-  </div>
+<div id="November" class="page" style="display:none;">
+November we had Halloween horror nights best day of my life we picked u up early and u slept with me all the way till we got there then u woke up and i remember how happy u were i got u the nice Jurassic park lanyard and we entered universal we ate some nice pizza and had a nice time then we got quick to the entrance and waited till it open we ran to fnaf which the house was so fun ti looked realistic and it was so cool even if not scary the terrifier line was so long but so worth it that was so peak i remember how scary it was but uw were jut having so much fun then we walked around and everything was so cool i loved it and omg how much u loved the 20s zombies hehe it made me so happy to be able to get u this experience cant wait to do it this year we also went to transformers and the mummy rides both were so much fun i glad we spend that time together and the ride back was a lot of fun u in my lap it all was heaven we had a couple of really nice dates more in the mall and ur house which i loved and even though we couldn't spend thanksgiving together it was such a perfect month
+</div>
 
-  <div class="page">
-    <h3>October</h3>
-    <small>Concerts & zombies</small>
-    <p>october, this month started with a super nice day where u had no school, and we went to grandma pool, and we had so much fun. we got some snacks, and then chilled on the couch. unfortunately u spent a lot of this month in georgia. even though i was sad and missed u like hell, it was okay, because i knew we would get back to seeing each other more. just some weeks, and we came back with a bang hehe. u took me to my first concert, and omg trst is so peakkkk, and it was such a vibe being there with you. i remember it so special. i will never forget it. i loved it. even if second guy wasn't my vibe, it was still super cool. then even though u no love this day, i see it in a different light. halloween, i had never dressed up except when i was a baby. i always hated halloween, as i felt out of place, like everybody was having so much fun but not me, and i couldn't have fun. but this year it was different because of you. u made me dress up with u, and we were the perfect zombie husband and wife. we both looked great, and even though it wasn't super long, and ur dad kinda ruined it for u, i had such special time still, and i felt so happy being with u, having so much fun, and i will never forget that day.</p>
-  </div>
+<div id="December" class="page" style="display:none;">
+December we had great dates liker the first time we went to the bins i remember how happy u were u told me how happy it made u and it was so nice such a cool store we spend a great time together then we also went to the pool at ur grandma house and even though it was kinda busy it was still so much fun and we got to spend some time together before i left for Christmas eve it was great i sad we didbt spend Christmas together but at least we had that date where i brought ur gifts and we opened them and layed on couch i was so hap0py to see u cause i missed u so much my princess then we got one of our best dates of all time new years was so much fun walking around downtown even with the cold just having such a great time even when we got lost i loved spending the bgeining of a new year with you we got those delicious hot dogs we walked around the pier we asked the tv guy what they were doing and we watched those beautiful fire works together i am so glad to have spend it with u daisy ur my everything i love you so much i cant wait for all the years we are going to spend together
+</div>
 
-  <div class="page">
-    <h3>November</h3>
-    <small>HHN & FNAF</small>
-    <p>november, we had halloween horror nights, best day of my life. we picked u up early, and u slept with me all the way till we got there. then u woke up, and i remember how happy u were. i got u the nice jurassic park lanyard, and we entered universal. we ate some nice pizza, and had a nice time. then we got quick to the entrance, and waited till it opened. we ran to fnaf, which the house was so fun. it looked realistic, and it was so cool, even if not scary. the terrifier line was so long, but so worth it. that was so peak. i remember how scary it was, but u were just having so much fun. then we walked around, and everything was so cool. i loved it. and omg how much u loved the 20s zombies hehe. it made me so happy to be able to get u this experience. cant wait to do it this year. we also went to transformers and the mummy rides. both were so much fun. i glad we spent that time together, and the ride back was a lot of fun, u in my lap. it all was heaven. we had a couple of really nice dates more in the mall and ur house, which i loved, and even though we couldn't spend thanksgiving together, it was such a perfect month.</p>
-  </div>
+<div id="January" class="page" style="display:none;">
+January was not a easy month as we saw each other early in the month and had a nice date but we both got sick after and couldn't see each other for a bit then my family didn't let me go out cause of ice but thats the thing about love sometimes it gets difficult and it seems like everything itrs bad but its not its learning to choose ur partner everyday and every time thats true love and we got through it as hard as it was we did and i am so glad we did because daisy through everything ur my everything i love you so much i am willing to go through anything to make sure we get to spend our life together princess i love you so much pls never forget and never give up
+</div>
 
-  <div class="page">
-    <h3>December</h3>
-    <small>Bins & New Year</small>
-    <p>december, we had great dates like the first time we went to the bins. i remember how happy u were. u told me how happy it made u, and it was so nice. such a cool store. we spent a great time together. then we also went to the pool at ur grandma house, and even though it was kinda busy, it was still so much fun, and we got to spend some time together before i left for christmas eve. it was great. i sad we didn't spend christmas together, but at least we had that date where i brought ur gifts, and we opened them, and laid on couch. i was so happy to see u, cause i missed u so much my princess. then we got one of our best dates of all time. new years was so much fun walking around downtown, even with the cold, just having such a great time. even when we got lost, i loved spending the beginning of a new year with you. we got those delicious hot dogs. we walked around the pier. we asked the tv guy what they were doing, and we watched those beautiful fireworks together. i am so glad to have spent it with u daisy. ur my everything. i love you so much. i cant wait for all the years we are going to spend together.</p>
-  </div>
+<div id="February" class="page" style="display:none;">
+February we finnaly got to see each other and it was so refreshing being able to see my princess we had a really nice date but it was so needed for me to see ur face to hold you to kiss u and for u to know how much i love you it was perfect then we had valentines day which was perfect i hope u liked my gifts even they were not the best i tried i love you it was so nice to be outside again as it was not as cold as it was before and u did ur puzzles while i watched my princess then we went to downtown ans we walked around got some delicuos food went to some cool stores u almost befriended a homeless guy and we had perfect day then we went to ur house ate some burgurs watched some youtube and hugged mucho and cuddled mucho we also had a super nice date again in ur house where we watched the train movie and we spend a nice time together i love chilling with my princess then we went park it was so nice walking around and being with you my princess sorry i hurt u tho i never want to always tell me if ur hurting then we went to ur house and had nice time before i had to go this month was so special to me as we finnaly were able to see each other and it felt like normalcy was back and i loved it so much i a am glad u made me so happy this month
+</div>
 
-  <div class="page">
-    <h3>January</h3>
-    <small>Choosing each other</small>
-    <p>january was not an easy month, as we saw each other early in the month, and had a nice date, but we both got sick after, and couldn't see each other for a bit. then my family didn't let me go out cause of ice. but that's the thing about love. sometimes it gets difficult, and it seems like everything is bad, but it's not. it's learning to choose ur partner everyday and every time. that's true love, and we got through it. as hard as it was, we did, and i am so glad we did, because daisy, through everything, ur my everything. i love you so much. i am willing to go through anything to make sure we get to spend our life together princess. i love you so much. pls never forget and never give up.</p>
-  </div>
-
-  <div class="page">
-    <h3>February</h3>
-    <small>Valentine & normal again</small>
-    <p>february, we finally got to see each other, and it was so refreshing being able to see my princess. we had a really nice date, but it was so needed for me to see ur face, to hold you, to kiss u, and for u to know how much i love you. it was perfect. then we had valentines day, which was perfect. i hope u liked my gifts. even if they were not the best, i tried. i love you. it was so nice to be outside again, as it was not as cold as it was before, and u did ur puzzles while i watched my princess. then we went to downtown, and we walked around, got some delicious food, went to some cool stores. u almost befriended a homeless guy, and we had perfect day. then we went to ur house, ate some burgers, watched some youtube, and hugged mucho, and cuddled mucho. we also had a super nice date again in ur house, where we watched the train movie, and we spent a nice time together. i love chilling with my princess. then we went park. it was so nice walking around and being with you my princess. sorry i hurt u tho. i never want to. always tell me if ur hurting. then we went to ur house, and had nice time before i had to go. this month was so special to me, as we finally were able to see each other, and it felt like normalcy was back, and i loved it so much. i am glad u made me so happy this month.</p>
-  </div>
-
-  <div class="page">
-    <h3>March · 1 Year</h3>
-    <small>Our first year complete</small>
-    <p>march, once again we are back in march, one year since my life changed completely, and met the love of my life. i thank you so much for everything baby. u really have made me the happiest man ever to be with you for this whole year, and i really hope, and i'll do anything so we get to spend our whole life together. ty for all the beautiful memories, and ik we will keep making them. i am so excited for our special week together. it will be great. i have no doubts, and i cant wait princess. ik i didn't talk about all dates or special memories, but i just wanted to make this to remind you princess, that through everything we are great, and we have had the most special year ever. i'll never give up on you. i love you daisy. ty once again for the most special year, my fiancé.</p>
-  </div>
+<div id="March2" class="page" style="display:none;">
+march once again we are back in march one year since my life changed completely and met the love of my life i thank you so much for everything baby u really have made me the happiest man ever to be with you for this whole year and i really hope and ill do anything so we get to spend our whole life together ty for all the beautifull memories and ik we will keep making them i am so excisted for our special week together it will be great i have no doubts and i cant wait princess ik i didn't talk about all dates or special memories but i just wanred to make this to remindd you princess that throught everything we are great and we have had the most special year ever ill never give up on you i love you daisy ty once again for the most special year my fiance
+</div>
 
 </div>
 
 </body>
 </html>
+```
